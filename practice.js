@@ -7,7 +7,9 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const app = express();
-app.use(express.json());
+// app.use(express.json());
+const jsonMiddleware = express.json();
+app.use(jsonMiddleware);
 
 const dbPath = path.join(__dirname, "covid19IndiaPortal.db");
 
@@ -88,9 +90,9 @@ app.post("/login", async (request, response) => {
   }
 });
 
-// MAKING QUERIES
+// MIDDLE WARE FUNCTION
 
-app.get("/districts", async (request, response) => {
+const authenticateToken = (request, response, next) => {
   let jwtToken;
   const authHeader = request.headers["authorization"];
   if (authHeader !== undefined) {
@@ -104,10 +106,16 @@ app.get("/districts", async (request, response) => {
       if (error) {
         response.send("Invalid Access Token");
       } else {
-        const getQuery = `SELECT * FROM district;`;
-        const queryResponse = await db.all(getQuery);
-        response.send(queryResponse);
+        next();
       }
     });
   }
+};
+
+// MAKING QUERIES
+
+app.get("/districts", authenticateToken, async (request, response) => {
+  const getQuery = `SELECT * FROM district;`;
+  const queryResponse = await db.all(getQuery);
+  response.send(queryResponse);
 });
