@@ -19,3 +19,19 @@ Content-Type: application/json
     "password" : "1000363"
     
 }
+
+###
+
+GET http://localhost:3000/districts
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlRocmlzaGlrIiwiaWF0IjoxNjkyNDU0OTIzfQ._3Zi3-WN7CV5OFXq8TXiXMcuPdM0Y-j89wvMipboF0g
+
+
+
+
+
+
+
+
+
+
+

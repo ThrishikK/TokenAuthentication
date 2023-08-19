@@ -4,6 +4,7 @@ const path = require("path");
 const { open } = require("sqlite");
 const sqlite3 = require("sqlite3");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const app = express();
 app.use(express.json());
@@ -75,10 +76,38 @@ app.post("/login", async (request, response) => {
       queryResult.password
     );
     if (isPasswordMatched === true) {
-      response.send("Login Success");
+      const payload = {
+        username: username,
+      };
+      const jwtToken = jwt.sign(payload, "My_Secret_Token");
+      response.send({ jwtToken });
     } else {
       response.status(400);
       response.send("Invalid Password");
     }
+  }
+});
+
+// MAKING QUERIES
+
+app.get("/districts", async (request, response) => {
+  let jwtToken;
+  const authHeader = request.headers["authorization"];
+  if (authHeader !== undefined) {
+    jwtToken = authHeader.split(" ")[1];
+  }
+  if (jwtToken === undefined) {
+    response.status(400);
+    response.send("Invalid Access Token");
+  } else {
+    jwt.verify(jwtToken, "My_Secret_Token", async (error, payload) => {
+      if (error) {
+        response.send("Invalid Access Token");
+      } else {
+        const getQuery = `SELECT * FROM district;`;
+        const queryResponse = await db.all(getQuery);
+        response.send(queryResponse);
+      }
+    });
   }
 });
