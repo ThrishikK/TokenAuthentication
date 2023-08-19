@@ -1,0 +1,21 @@
+POST http://localhost:3000/users
+Content-Type: application/json
+
+{
+    "name" : "Kosuru Thrishik",
+    "username" : "Thrishik",
+    "password" : "1000363",
+    "gender" : "Male",
+    "location" : "Nellore"
+
+}
+###
+
+POST http://localhost:3000/login
+Content-Type: application/json
+
+{
+    "username" : "Thrishik",
+    "password" : "1000363"
+    
+}
